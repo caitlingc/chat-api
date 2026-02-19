@@ -2,7 +2,8 @@ const db = require('../../config/db');
 
 // used to find all users except one
 function findOtherUsers(user_id, callback) {
-    const query = 'SELECT user_id, email, first_name, last_name, date_registered FROM users WHERE user_id != ?';
+    const query = `SELECT user_id, email, first_name, last_name, date_registered FROM users 
+                   WHERE user_id != ?`;
     db.query(query, [user_id], (err, results) => {
         if (err) return callback(err);
         callback(null, results);

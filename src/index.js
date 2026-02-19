@@ -8,21 +8,31 @@ const pool = require('./config/db');
 app.use(express.json()); 
 
 const userRoutes = require('./api/routes/userRoutes');
+const messageRoutes = require('./api/routes/messageRoutes');
+const test = require('node:test');
 app.use('/users', userRoutes); 
+app.use('/messages', messageRoutes);
 
 app.get('/', (req, res) => {
     res.json('chat-api running');
 }); 
 
-pool.getConnection((err, connection) => {
-    if (err) {
+async function testDBConnection() {
+    try {
+        const connection = await pool.promise().getConnection();
+        console.log("connected to MySQL");
+        connection.release();
+    } catch (err) {
         console.error("MySQL connection failed:", err.message);
         process.exit(1); 
     }
-    console.log("connected to MySQL"); 
-    connection.release(); 
+};
 
+testDBConnection().then(() => {
     app.listen(PORT, () => {
         console.log(`server running on port ${PORT}`);
-    }); 
+    });
+}).catch(err => {
+    console.error("failed to start server:", err);
+    process.exit(1);
 }); 

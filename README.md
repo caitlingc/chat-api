@@ -17,8 +17,18 @@ npm install express mysql2 dotenv
 
 4. Implemented user controller/model/routes. 
 
+5. Implemented message controller/model/routes. This was more simple. 
+
 ## on endpoint structure
 --
 
 ## future improvements
+
+### security
+--
+
+### usability
+--
+
+### API design
 --

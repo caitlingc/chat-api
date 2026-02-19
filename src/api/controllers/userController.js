@@ -11,7 +11,7 @@ function registerUser(req, res) {
     }
 
     findUserByEmail(email, (err, existingUser) => {
-        if (err) {
+        if (err) { 
             console.error("error checking existing users:", err);
             return res.status(500).json({ 
                 error_code: 500, 
