@@ -7,16 +7,22 @@ const pool = require('./config/db');
 
 app.use(express.json()); 
 
-pool.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log("connected to MySQL"); 
-    connection.release(); 
-});
+const userRoutes = require('./api/routes/userRoutes');
+app.use('/users', userRoutes); 
 
 app.get('/', (req, res) => {
     res.json('chat-api running');
 }); 
 
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`);
+pool.getConnection((err, connection) => {
+    if (err) {
+        console.error("MySQL connection failed:", err.message);
+        process.exit(1); 
+    }
+    console.log("connected to MySQL"); 
+    connection.release(); 
+
+    app.listen(PORT, () => {
+        console.log(`server running on port ${PORT}`);
+    }); 
 }); 

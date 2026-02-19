@@ -15,6 +15,8 @@ npm install express mysql2 dotenv
 
 3. Designed an ERD to visualize entities and relationships (not pictured). Translated to schema for MySQL. I am using MySQL Workbench to manage the database and test during development. Configured MySQL connection. 
 
+4. Implemented user controller/model/routes. 
+
 ## on endpoint structure
 --
 
