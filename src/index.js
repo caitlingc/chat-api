@@ -10,8 +10,8 @@ app.use(express.json());
 const userRoutes = require('./api/routes/userRoutes');
 const messageRoutes = require('./api/routes/messageRoutes');
 const test = require('node:test');
-app.use('/users', userRoutes); 
-app.use('/messages', messageRoutes);
+app.use('/', userRoutes); 
+app.use('/', messageRoutes);
 
 app.get('/', (req, res) => {
     res.json('chat-api running');

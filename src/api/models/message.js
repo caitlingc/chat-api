@@ -1,9 +1,10 @@
 const db = require('../../config/db');
 
 function findMessageHistory(sender_id, receiver_id, callback) {
-    const query = `SELECT * FROM messages WHERE sender_id = ? AND receiver_id = ? 
-                   ORDER BY date_created DESC`;
-    db.query(query, [sender_id, receiver_id], (err, results) => {
+    const query = `SELECT * FROM messages WHERE (sender_id = ? AND receiver_id = ?)
+                   OR (sender_id = ? AND receiver_id = ?)
+                   ORDER BY time_sent DESC`;
+    db.query(query, [sender_id, receiver_id, receiver_id, sender_id], (err, results) => {
         if (err) return callback(err);
         callback(null, results); 
     });

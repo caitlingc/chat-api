@@ -1,3 +1,5 @@
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 const { findOtherUsers, findUserByEmail, insertUser } = require('../models/user');
 
 function registerUser(req, res) {
@@ -12,7 +14,6 @@ function registerUser(req, res) {
 
     findUserByEmail(email, (err, existingUser) => {
         if (err) { 
-            console.error("error checking existing users:", err);
             return res.status(500).json({ 
                 error_code: 500, 
                 error_title: 'look-up failure', 
@@ -29,8 +30,7 @@ function registerUser(req, res) {
         }
 
         insertUser(req.body, (err, userData) => {
-            if (err) {
-                console.error("error inserting new user:", err);
+            if (err) { 
                 return res.status(500).json({ 
                     error_code: 500, 
                     error_title: 'registration failure', 
@@ -55,7 +55,6 @@ function loginUser(req, res) {
 
     findUserByEmail(email, (err, credentials) => {
         if (err) {
-            console.error("error finding user:", err);
             return res.status(500).json({ 
                 error_code: 500, 
                 error_title: 'look-up failure', 
@@ -71,17 +70,52 @@ function loginUser(req, res) {
             });
         }
 
+        // generate JWT token
+        const token = jwt.sign(
+            { user_id: credentials.user_id }, // only includes user_id in token payload
+            process.env.JWT_SECRET, 
+            { expiresIn: '1h' }
+        );
+
         res.status(200).json({ 
             user_id: credentials.user_id,
             email: credentials.email, 
             first_name: credentials.first_name, 
             last_name: credentials.last_name, 
-            date_registered: credentials.date_registered
-        }); // successful login, send back safe info credentials (no password)
+            date_registered: credentials.date_registered, 
+            token: token
+        }); // successful login, send back safe info credentials (no password) + new JWT token
     });
 };
 
+function findAllUsers(req, res) {
+    const user_id = req.params.user_id;
+
+    // authorization check
+    if (parseInt(user_id) !== req.user.user_id) {
+        return res.status(403).json({
+            error_code: 403,
+            error_title: 'forbidden',
+            error_message: 'you are not authorized to see users for this user_id'
+        });
+    }
+
+    findOtherUsers(user_id, (err, users) => {
+        if (err) {
+            return res.status(500).json({ 
+                error_code: 500, 
+                error_title: 'error fetching users', 
+                error_message: 'an error occurred while fetching users' 
+            });
+        }
+    
+        res.status(200).json(users); // successful fetch of other users
+    });
+};
+
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser, 
+    findAllUsers
 };
