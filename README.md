@@ -49,4 +49,8 @@ The endpoint structure used here violates most [REST API name conventions](https
 - Follow REST API naming conventions to make the API easier to use and more predictable. 
 - Using query vs. param for GET endpoints (for readability). 
 - Include versioning in the path. Likely in the form of ```/api/v1/messages```. 
-- Auth can also have its own paths ```/api/v1/auth/login```. 
+- Auth can also have its own paths ```/api/v1/auth/login```.
+
+### feedback
+- Include ```.env``` examples in the ```README```.
+- ```SELECT *``` causing future security issues. 
